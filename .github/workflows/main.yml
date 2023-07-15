@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - master
+      - tinker
   pull_request:
     branches:
       - master
+      - tinker
 
 jobs:
   build:
