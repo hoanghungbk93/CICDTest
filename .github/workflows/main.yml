@@ -19,7 +19,8 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: SSH to ngrok tunnel
+    - name: 6th_D
+      if: github.ref == 'refs/heads/master'
       run: |
         export NGROK_ADDRESS="0.tcp.ap.ngrok.io:15369"  # Replace with the ngrok forwarding address
 
@@ -31,5 +32,23 @@ jobs:
 
         # Wait for the tunnel to establish
         sleep 5
-    - name: Deploy to Device 1
-      run: sshpass -p admin12345 ssh -o StrictHostKeyChecking=no -p 15369 pi@0.tcp.ap.ngrok.io 'cd ~/Desktop/config && touch hello.txt'
+    - name: Deploy to Device 6th_D
+      if: github.ref == 'refs/heads/master'
+      run: sshpass -p ${{ secrets.SSH_PASSWORD }} ssh -o StrictHostKeyChecking=no -p 15369 ${{ secrets.SSH_USERNAME }}@0.tcp.ap.ngrok.io 'cd ~/Desktop/config && touch hello.txt'
+
+    - name: VINNCT_A
+      if: github.ref == 'refs/heads/tinker'
+      run: |
+        export NGROK_ADDRESS="0.tcp.ap.ngrok.io:14577"  # Replace with the ngrok forwarding address
+
+        # Install sshpass
+        sudo apt-get install -y sshpass
+
+        # Establish SSH connection to ngrok tunnel
+        sshpass -p ${{ secrets.TINKER_SSH_PASSWORD }} ssh -o StrictHostKeyChecking=no -p 22 -N -L 2222:$NGROK_ADDRESS ${{ secrets.TINKER_SSH_USERNAME }}@localhost &
+
+        # Wait for the tunnel to establish
+        sleep 5
+    - name: Deploy to Device VINNCT_A
+      if: github.ref == 'refs/heads/master'
+      run: sshpass -p ${{ secrets.TINKER_SSH_PASSWORD }} ssh -o StrictHostKeyChecking=no -p 14577 ${{ secrets.SSH_USERNAME }}@0.tcp.ap.ngrok.io 'cd ~/Desktop/config && touch hello.txt'
