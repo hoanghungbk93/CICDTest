@@ -52,5 +52,5 @@ jobs:
         # Wait for the tunnel to establish
         sleep 5
     - name: Deploy to Device VINNCT_A
-      if: github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/tinker'
       run: sshpass -p ${{ secrets.TINKER_SSH_PASSWORD }} ssh -o StrictHostKeyChecking=no -p 14577 ${{ secrets.SSH_USERNAME }}@0.tcp.ap.ngrok.io 'cd ~/Desktop/config && touch hello.txt'
